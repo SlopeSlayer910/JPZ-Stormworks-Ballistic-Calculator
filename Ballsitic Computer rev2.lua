@@ -97,11 +97,8 @@ return closestAngle
 end
 
 function onTick()
-r = input.getNumber(1)
-t = input.getNumber(2)
-
-target.pos.x = r*math.cos(t*math.pi*2)
-target.pos.y = r*math.sin(t*math.pi*2)
+target.pos.x = input.getNumber(1)
+target.pos.y = input.getNumber(2)
 
 scan1 = scan(90,0,10)
 scan2 = scan(scan1 + 10, scan1 - 10, 2.5)
@@ -109,9 +106,5 @@ scan3 = scan(scan2 + 2.5,scan2 - 2.5, 0.2)
 scan4 = scan(scan3 + 0.2,scan3 - 0.2, 0.04)
 scan5 = scan(scan4 + 0.04,scan4 - 0.04, 0.008)
 
-output.setNumber(1,scan5/360)
-output.setNumber(2,target.pos.x)
-output.setNumber(3,target.pos.y)
-output.setNumber(4,scan5)
-output.setNumber(5,type)
+output.setNumber(1,scan5)
 end
