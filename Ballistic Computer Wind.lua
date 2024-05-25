@@ -70,8 +70,8 @@ function setUp(pitch, windSpeed, windDirection)
   projectile.ticks = 0
 end
 function updateVelocities()
-  projectile.vel.x = projectile.vel.x * (1 - projectile.drag) + (-windX*c)
-  projectile.vel.y = projectile.vel.y + (-windY*c)
+  projectile.vel.x = projectile.vel.x * (1 - projectile.drag) + (-windX*windCoefficent)
+  projectile.vel.y = projectile.vel.y + (-windY*windCoefficent)
   projectile.vel.z = projectile.vel.z * (1 - projectile.drag) - 0.5
 end
 function updatePosition()
@@ -86,7 +86,7 @@ function missAmount(pitch)
     updateVelocities()
     updatePosition()
   end
-  return (projectile.pos.z - target.pos.y)
+  return (projectile.pos.z - target.pos.z)
 end
 function scan(Stop, Start, Step)
   smallestMiss = math.huge
@@ -101,17 +101,18 @@ function scan(Stop, Start, Step)
 end
 
 function onTick()
-  r = input.getNumber(1)
-  t = input.getNumber(2)
-  w = input.getNumber(3)
-  d = input.getNumber(4)
-  c = input.getNumber(5)
+  laserRange = input.getNumber(1)
+  laserTilt = input.getNumber(2)
+  windSpeed = input.getNumber(3)
+  windDirection = input.getNumber(4)
+  windCoefficent = input.getNumber(5)
 
-  target.pos.x = r*math.cos(t*math.pi*2)
-  target.pos.y = r*math.sin(t*math.pi*2)
+  target.pos.x = laserRange*math.cos(laserTilt*math.pi*2)
+  target.pos.y = 0
+  target.pos.z = laserRange*math.sin(laserTilt*math.pi*2)
 
-  windX = w*math.cos(d*math.pi*2)
-  windY = w*math.sin(d*math.pi*2)
+  windX = windSpeed*math.cos(windDirection*math.pi*2)
+  windY = windSpeed*math.sin(windDirection*math.pi*2)
 
 
   scan1 = scan(90,0,10)
@@ -122,7 +123,7 @@ function onTick()
 
   output.setNumber(1,scan5/360)
   output.setNumber(2,target.pos.x)
-  output.setNumber(3,target.pos.y)
+  output.setNumber(3,target.pos.z)
   output.setNumber(4,scan5)
   output.setNumber(5,type)
   output.setNumber(7, windX)
