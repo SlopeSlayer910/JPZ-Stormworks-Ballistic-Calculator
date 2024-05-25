@@ -46,35 +46,60 @@ end
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
 
-type = property.getNumber("Weapon Type")                              --Get the type of weapon from the property
-projectileType = {                                                    --Table of all the data revelent to each weapon type
-  {drag = 0.025,  lifetime = 300,  muzzel = 800},                     --Machine Gun
-  {drag = 0.02,   lifetime = 300,  muzzel = 1000},                    --Light Autocannon
-  {drag = 0.01,   lifetime = 300,  muzzel = 1000},                    --Rotary Autocannon
-  {drag = 0.005,  lifetime = 600,  muzzel = 900},                     --Heavy Autocannon
-  {drag = 0.002,  lifetime = 3600, muzzel = 800},                     --Battle Cannon
-  {drag = 0.001,  lifetime = 3600, muzzel = 700},                     --Artillery Cannon
-  {drag = 0.0005, lifetime = 3600, muzzel = 600},                     --Bertha Cannon
+-- Get the type of weapon from the property
+type = property.getNumber("Weapon Type")
+
+-- Define the number of steps per scan
+stepsPerScan = 5
+
+-- Set the total number of scans
+numberOfScans = 5
+
+-- Table of all the data relevant to each weapon type
+projectileType = {
+  {drag = 0.025, lifetime = 300, muzzel = 800},  -- Machine Gun
+  {drag = 0.02, lifetime = 300, muzzel = 1000},  -- Light Autocannon
+  {drag = 0.01, lifetime = 300, muzzel = 1000},  -- Rotary Autocannon
+  {drag = 0.005, lifetime = 600, muzzel = 900},  -- Heavy Autocannon
+  {drag = 0.002, lifetime = 3600, muzzel = 800}, -- Battle Cannon
+  {drag = 0.001, lifetime = 3600, muzzel = 700}, -- Artillery Cannon
+  {drag = 0.0005, lifetime = 3600, muzzel = 600} -- Bertha Cannon
 }
-projectile = projectileType[type]                                     --Set the current projectile to the type selected
-target = {pos = {x = 0, y = 0}}                                       --Initialize the target
-function setUp(pitch)                                                 --Function to initialize each projectile simulation
-  projectile.vel = {}                                                 --Initialize the velocity table
-  projectile.pos = {}                                                 --Initializethe position table
-  projectile.vel.x = projectile.muzzel*math.cos(pitch)                --Use the inputed pitch to calculate the initial velocities
-  projectile.vel.z = projectile.muzzel*math.sin(pitch)                --
-  projectile.pos.x = 0                                                --Reset and initialize the other variables
-  projectile.pos.z = 0                                                --
-  projectile.ticks = 0                                                --
+
+-- Set the current projectile to the type selected
+projectile = projectileType[type]
+
+-- Initialize the target position
+target = {pos = {x = 0, z = 0}}
+
+-- Function to initialize each projectile simulation
+function setUp(pitch)
+  -- Initialize the velocity table
+  projectile.vel = {}
+  -- Initialize the position table
+  projectile.pos = {}
+  -- Calculate the initial velocities based on the input pitch
+  projectile.vel.x = projectile.muzzel * math.cos(pitch)
+  projectile.vel.z = projectile.muzzel * math.sin(pitch)
+  -- Reset and initialize other variables
+  projectile.pos.x = 0
+  projectile.pos.z = 0
+  projectile.ticks = 0
 end
+
+-- Update projectile velocities
 function updateVelocities()
   projectile.vel.x = projectile.vel.x * (1 - projectile.drag)
   projectile.vel.z = projectile.vel.z * (1 - projectile.drag) - 0.5
 end
+
+-- Updates projectile position
 function updatePosition()
-  projectile.pos.x = projectile.pos.x + projectile.vel.x/60
-  projectile.pos.z = projectile.pos.z + projectile.vel.z/60
+  projectile.pos.x = projectile.pos.x + projectile.vel.x / 60
+  projectile.pos.z = projectile.pos.z + projectile.vel.z / 60
 end
+
+-- Calculate vertical amount when the porjectile passes ovet the target distance based on pitch
 function missAmount(pitch)
   setUp(pitch)
   while (projectile.lifetime >= projectile.ticks and target.pos.x > projectile.pos.x) do
@@ -82,29 +107,34 @@ function missAmount(pitch)
     updateVelocities()
     updatePosition()
   end
-  return (projectile.pos.z - target.pos.y)
+  return (projectile.pos.z - target.pos.z)
 end
+
+-- Perform a scan to find the closest angle
 function scan(Stop, Start, Step)
   smallestMiss = math.huge
   closestAngle = 0
-  for i=Start,Stop,Step do
-    if (math.abs(missAmount(i*math.pi/180)) < smallestMiss) then
-      smallestMiss = math.abs(missAmount(i*math.pi/180))
+  for i = Start, Stop, Step do
+    if (math.abs(missAmount(i * math.pi / 180)) < smallestMiss) then
+      smallestMiss = math.abs(missAmount(i * math.pi / 180))
       closestAngle = i
     end
   end
   return closestAngle
 end
 
+-- Main function executed on each tick
 function onTick()
+  -- Update target position
   target.pos.x = input.getNumber(1)
-  target.pos.y = input.getNumber(2)
+  target.pos.z = input.getNumber(2)
 
-  scan1 = scan(90,0,10)
-  scan2 = scan(scan1 + 10,   scan1 - 10,   2.5)
-  scan3 = scan(scan2 + 2.5,  scan2 - 2.5,  0.2)
-  scan4 = scan(scan3 + 0.2,  scan3 - 0.2,  0.04)
-  scan5 = scan(scan4 + 0.04, scan4 - 0.04, 0.008)
+  -- Perform scans to find the optimal angle
+  scans = {scan(90, 0, 10)}
+  for i = 2, numberOfScans, 1 do
+    scans[i] = scan(scans[i - 1] + 10 / (5^(i - 2)), scans[i - 1] - 10 / (54^(i - 2)), 10 / (5^(i - 1)))
+  end
 
-  output.setNumber(1, scan5)
+  -- Output the result
+  output.setNumber(1, scans[#scans])
 end
