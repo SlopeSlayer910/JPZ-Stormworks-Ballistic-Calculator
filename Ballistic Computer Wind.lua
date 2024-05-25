@@ -46,41 +46,65 @@ end
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
 
+-- Get the type of weapon from the property
 type = property.getNumber("Weapon Type")
+
+-- Define the number of steps per scan
+stepsPerScan = 5
+
+-- Set the total number of scans
+numberOfScans = 5
+
+-- Table of all the data relevant to each weapon type
 projectileType = {
-  {drag = 0.025,  lifetime = 300,  muzzel = 800,  wind = 0.002}, --mg
-  {drag = 0.02,   lifetime = 300,  muzzel = 1000, wind = 0.01}, --lac
-  {drag = 0.01,   lifetime = 300,  muzzel = 1000, wind = 0.002}, --rac
-  {drag = 0.005,  lifetime = 600,  muzzel = 900,  wind = 0.002}, --hac
-  {drag = 0.002,  lifetime = 3600, muzzel = 800,  wind = 0.002}, --bc
-  {drag = 0.001,  lifetime = 3600, muzzel = 700,  wind = 0.002}, --ac
-  {drag = 0.0005, lifetime = 3600, muzzel = 600,  wind = 0.002}, --bertha
+  {drag = 0.025,  lifetime = 300,  muzzel = 800},  -- Machine Gun
+  {drag = 0.02,   lifetime = 300,  muzzel = 1000}, -- Light Autocannon
+  {drag = 0.01,   lifetime = 300,  muzzel = 1000}, -- Rotary Autocannon
+  {drag = 0.005,  lifetime = 600,  muzzel = 900},  -- Heavy Autocannon
+  {drag = 0.002,  lifetime = 3600, muzzel = 800},  -- Battle Cannon
+  {drag = 0.001,  lifetime = 3600, muzzel = 700},  -- Artillery Cannon
+  {drag = 0.0005, lifetime = 3600, muzzel = 600}   -- Bertha Cannon
 }
+
+-- Set the current projectile to the type selected
 projectile = projectileType[type]
-target = {pos = {x = 0, y = 1000}}
-function setUp(pitch, windSpeed, windDirection)
-  projectile.vel = {}
-  projectile.pos = {}
-  projectile.vel.x = projectile.muzzel*math.cos(pitch)
-  projectile.vel.z = projectile.muzzel*math.sin(pitch)
+
+-- Initialize the target position
+target = {pos = {x = 0, y = 0, z = 0}}
+
+-- Function to initialize each projectile simulation
+function setUp(pitch)
+  -- Initialize the velocity and position tables
+  projectile.vel, projectile.pos = {}, {}
+
+  -- Calculate the initial velocities based on the input pitch
+  projectile.vel.x = projectile.muzzel * math.cos(pitch)
   projectile.vel.y = 0
+  projectile.vel.z = projectile.muzzel * math.sin(pitch)
+  -- Reset and initialize other variables
   projectile.pos.x = 0
   projectile.pos.y = 0
   projectile.pos.z = 0
   projectile.ticks = 0
 end
+
+-- Update projectile velocities
 function updateVelocities()
   projectile.vel.x = projectile.vel.x * (1 - projectile.drag) + (-windX*windCoefficent)
   projectile.vel.y = projectile.vel.y + (-windY*windCoefficent)
   projectile.vel.z = projectile.vel.z * (1 - projectile.drag) - 0.5
 end
+
+-- Updates projectile position
 function updatePosition()
   projectile.pos.x = projectile.pos.x + projectile.vel.x/60
   projectile.pos.y = projectile.pos.y + projectile.vel.y/60
   projectile.pos.z = projectile.pos.z + projectile.vel.z/60
 end
+
+-- Calculate vertical amount when the porjectile passes ovet the target distance based on pitch
 function missAmount(pitch)
-  setUp(pitch, 0, 0)
+  setUp(pitch)
   while (projectile.lifetime >= projectile.ticks and target.pos.x > projectile.pos.x) do
     projectile.ticks = projectile.ticks + 1
     updateVelocities()
@@ -88,6 +112,8 @@ function missAmount(pitch)
   end
   return (projectile.pos.z - target.pos.z)
 end
+
+-- Perform a scan to find the closest pitch angle
 function scan(Stop, Start, Step)
   smallestMiss = math.huge
   closestAngle = 0
@@ -115,17 +141,22 @@ function onTick()
   windY = windSpeed*math.sin(windDirection*math.pi*2)
 
 
+  scans = {scan(90, 0, 10)}
+  for i = 2, numberOfScans, 1 do
+    scans[i] = scan(scans[i - 1] + 10 / (5^(i - 2)), scans[i - 1] - 10 / (54^(i - 2)), 10 / (5^(i - 1)))
+  end
+
   scan1 = scan(90,0,10)
   scan2 = scan(scan1 + 10, scan1 - 10, 2.5)
   scan3 = scan(scan2 + 2.5,scan2 - 2.5, 0.2)
   scan4 = scan(scan3 + 0.2,scan3 - 0.2, 0.04)
   scan5 = scan(scan4 + 0.04,scan4 - 0.04, 0.008)
 
-  output.setNumber(1,scan5/360)
-  output.setNumber(2,target.pos.x)
-  output.setNumber(3,target.pos.z)
-  output.setNumber(4,scan5)
-  output.setNumber(5,type)
+  output.setNumber(1, scans[#scans]/360)
+  output.setNumber(2, target.pos.x)
+  output.setNumber(3, target.pos.z)
+  output.setNumber(4, scans[#scans])
+  output.setNumber(5, type)
   output.setNumber(7, windX)
   output.setNumber(8, windY)
   output.setNumber(9, projectile.pos.y)
