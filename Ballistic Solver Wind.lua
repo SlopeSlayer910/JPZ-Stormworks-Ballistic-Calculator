@@ -90,8 +90,8 @@ end
 
 -- Update projectile velocities
 function updateVelocities()
-  projectile.vel.x = projectile.vel.x * (1 - projectile.drag) + (-windX*windCoefficent)
-  projectile.vel.y = projectile.vel.y + (-windY*windCoefficent)
+  projectile.vel.x = projectile.vel.x * (1 - projectile.drag) + (windX*windCoefficent)
+  projectile.vel.y = projectile.vel.y + (windY*windCoefficent)
   projectile.vel.z = projectile.vel.z * (1 - projectile.drag) - 0.5
 end
 
@@ -102,7 +102,7 @@ function updatePosition()
   projectile.pos.z = projectile.pos.z + projectile.vel.z/60
 end
 
--- Calculate vertical amount when the porjectile passes ovet the target distance based on pitch
+-- Calculate vertical amount when the porjectile passes over the target distance based on launch pitch
 function missAmount(pitch)
   setUp(pitch)
   while (projectile.lifetime >= projectile.ticks and target.pos.x > projectile.pos.x) do
