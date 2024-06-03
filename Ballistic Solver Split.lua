@@ -53,7 +53,11 @@ type = property.getNumber("Weapon Type")
 stepsPerScan = 3
 
 -- Set the total number of scans
-scansPerSet = 5
+scansPerSet = 1
+
+sets = 10
+setNumber = 1
+currentAngle = 0
 
 -- Table of all the data relevant to each weapon type
 projectileType = {
@@ -133,16 +137,22 @@ end
 
 -- Main function executed on each tick
 function onTick()
-  -- Update target position
-  target.pos.x = input.getNumber(1)
-  target.pos.z = input.getNumber(2)
-
+  if setNumber == 1 then
+    -- Update target position
+    target.pos.x = input.getNumber(1)
+    target.pos.z = input.getNumber(2)
+    scans = {scan(90, math.deg(math.atan(target.pos.z,target.pos.x))//10-10, 10)}
+  end
   -- Perform scans to find the optimal angle
-  scans = {scan(90, math.deg(math.atan(target.pos.z,target.pos.x))//10-10, 10)}
-  for i = 2, scansPerSet, 1 do
+  for i = (setNumber-1)*scansPerSet+2, setNumber*scansPerSet, 1 do
     scans[i] = scan(scans[i - 1] + 10 / (stepsPerScan^(i - 2)), scans[i - 1] - 10 / (stepsPerScan^(i - 2)), 10 / (stepsPerScan^(i - 1)))
   end
-
+  if setNumber >= sets then
+    setNumber = 1
+    currentAngle = scans[#scans]
+  else
+    setNumber = setNumber+1
+  end
   -- Output the result
-  output.setNumber(1, scans[#scans])
+  output.setNumber(1, currentAngle)
 end
