@@ -90,8 +90,8 @@ end
 
 -- Update projectile velocities
 function updateVelocities()
-  projectile.vel.x = projectile.vel.x * (1 - projectile.drag) + (-windX*windCoefficent)
-  projectile.vel.y = projectile.vel.y + (-windY*windCoefficent)
+  projectile.vel.x = projectile.vel.x * (1 - projectile.drag) + (windX*windCoefficent)
+  projectile.vel.y = projectile.vel.y + (windY*windCoefficent)
   projectile.vel.z = projectile.vel.z * (1 - projectile.drag) - 0.5
 end
 
@@ -102,13 +102,21 @@ function updatePosition()
   projectile.pos.z = projectile.pos.z + projectile.vel.z/60
 end
 
--- Calculate vertical amount when the porjectile passes ovet the target distance based on pitch
+-- Calculate vertical amount when the porjectile passes over the target distance based on launch pitch
 function missAmount(pitch)
   setUp(pitch)
   while (projectile.lifetime >= projectile.ticks and target.pos.x > projectile.pos.x) do
     projectile.ticks = projectile.ticks + 1
     updateVelocities()
     updatePosition()
+    --if the projectile will not get within 10m of the target distance in the remander of its lifetime traveling at it's current speed then return huge
+    if (projectile.pos.x + projectile.vel.x*(projectile.lifetime-projectile.ticks)) < target.pos.x - 10 then
+      return math.huge
+    end
+    --if the projectile is 175m under the target and going down by 175m/s then return huge
+    if (projectile.vel.z < -175) and ((projectile.pos.z - target.pos.z) < -175) then
+      return math.huge
+    end
   end
   return (projectile.pos.z - target.pos.z)
 end
@@ -118,8 +126,8 @@ function scan(Stop, Start, Step)
   smallestMiss = math.huge
   closestAngle = 0
   for i=Start,Stop,Step do
-    if (math.abs(missAmount(i*math.pi/180)) < smallestMiss) then
-      smallestMiss = math.abs(missAmount(i*math.pi/180))
+    if (math.abs(missAmount(math.rad(i))) < smallestMiss) then
+      smallestMiss = math.abs(missAmount(math.rad(i)))
       closestAngle = i
     end
   end
@@ -141,16 +149,10 @@ function onTick()
   windY = windSpeed*math.sin(windDirection*math.pi*2)
 
 
-  scans = {scan(90, 0, 10)}
+  scans = {scan(90, math.deg(math.atan(target.pos.z,target.pos.x))//10-10, 10)}
   for i = 2, numberOfScans, 1 do
-    scans[i] = scan(scans[i - 1] + 10 / (5^(i - 2)), scans[i - 1] - 10 / (54^(i - 2)), 10 / (5^(i - 1)))
+    scans[i] = scan(scans[i - 1] + 10 / (stepsPerScan^(i - 2)), scans[i - 1] - 10 / (stepsPerScan^(i - 2)), 10 / (stepsPerScan^(i - 1)))
   end
-
-  scan1 = scan(90,0,10)
-  scan2 = scan(scan1 + 10, scan1 - 10, 2.5)
-  scan3 = scan(scan2 + 2.5,scan2 - 2.5, 0.2)
-  scan4 = scan(scan3 + 0.2,scan3 - 0.2, 0.04)
-  scan5 = scan(scan4 + 0.04,scan4 - 0.04, 0.008)
 
   output.setNumber(1, scans[#scans]/360)
   output.setNumber(2, target.pos.x)
