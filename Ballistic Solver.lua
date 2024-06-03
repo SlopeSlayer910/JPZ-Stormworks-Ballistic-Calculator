@@ -110,6 +110,10 @@ function missAmount(pitch)
     if (projectile.pos.x + projectile.vel.x*(projectile.lifetime-projectile.ticks)) < target.pos.x - 10 then
       return math.huge
     end
+    --if the projectile is 175m under the target and going down by 175m/s then return huge
+    if (projectile.vel.z < -175) and ((projectile.pos.z - target.pos.z) < -175) then
+      return math.huge
+    end
   end
   return (projectile.pos.z - target.pos.z)
 end
