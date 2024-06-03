@@ -138,7 +138,7 @@ function onTick()
   target.pos.z = input.getNumber(2)
 
   -- Perform scans to find the optimal angle
-  scans = {scan(90, math.deg(math.atan(target.pos.z,target.pos.x))-10, 10)}
+  scans = {scan(90, math.deg(math.atan(target.pos.z,target.pos.x))//10-10, 10)}
   for i = 2, numberOfScans, 1 do
     scans[i] = scan(scans[i - 1] + 10 / (stepsPerScan^(i - 2)), scans[i - 1] - 10 / (stepsPerScan^(i - 2)), 10 / (stepsPerScan^(i - 1)))
   end
