@@ -51,10 +51,13 @@ type = property.getNumber("Weapon Type")
 -- Define the number of steps per scan
 stepsPerScan = 3
 
--- Set the total number of scans
-scansPerSet = 1
+-- Set the number of scans per tick
+scansPerSet = 3
 
-sets = 10
+--The amount of ticks to run before changing the output / getting new input.
+sets = 3
+
+--Variables for during the execution of the program
 setNumber = 1
 currentAngle = 0
 
