@@ -144,5 +144,5 @@ function onTick()
   end
 
   -- Output the result
-  output.setNumber(1, scans[#scans])
+  output.setNumber(1, scans[#scans]) --outputs target angle of elevation in degrees
 end

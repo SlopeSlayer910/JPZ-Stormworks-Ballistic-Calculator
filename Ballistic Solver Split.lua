@@ -156,7 +156,7 @@ function onTick()
     setNumber = setNumber+1
   end
   -- Output the result
-  output.setNumber(1, currentAngle/360)
+  output.setNumber(1, currentAngle/360) --converts the current angle in degrees to turns
   output.setNumber(2, target.pos.x)
   output.setNumber(3, target.pos.z)
   output.setNumber(4, currentAngle)
