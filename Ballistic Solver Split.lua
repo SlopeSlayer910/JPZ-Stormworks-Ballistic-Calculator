@@ -14,7 +14,7 @@ do
   ---@type Simulator -- Set properties and screen sizes here - will run once when the script is loaded
   simulator = simulator
   simulator:setScreen(1, "3x3")
-  simulator:setProperty("Weapon Type", 5)
+  simulator:setProperty("Weapon Type", 7)
 
   -- Runs every tick just before onTick; allows you to simulate the inputs changing
   ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
@@ -31,10 +31,9 @@ do
 
       -- NEW! button/slider options from the UI
       simulator:setInputBool(31, simulator:getIsClicked(1))       -- if button 1 is clicked, provide an ON pulse for input.getBool(31)
-      simulator:setInputNumber(31, simulator:getSlider(1))        -- set input 31 to the value of slider 1
-
+      simulator:setInputNumber(5, simulator:getSlider(1) * 7500)        -- set input 31 to the value of slider 1
       simulator:setInputBool(32, simulator:getIsToggled(2))       -- make button 2 a toggle, for input.getBool(32)
-      simulator:setInputNumber(32, simulator:getSlider(2) * 50)   -- set input 32 to the value from slider 2 * 50
+      simulator:setInputNumber(6, simulator:getSlider(2) * 100)   -- set input 32 to the value from slider 2
   end;
 end
 ---@endsection
@@ -139,8 +138,8 @@ end
 function onTick()
   if setNumber == 1 then
     -- Update target position
-    target.pos.x = input.getNumber(1)
-    target.pos.z = input.getNumber(2)
+    target.pos.x = input.getNumber(1)*math.cos(input.getNumber(2)*math.pi*2)
+    target.pos.z = input.getNumber(1)*math.sin(input.getNumber(2)*math.pi*2)
     scans = {scan(90, math.deg(math.atan(target.pos.z,target.pos.x))//10-10, 10)}
   end
   -- Perform scans to find the optimal angle
@@ -154,5 +153,9 @@ function onTick()
     setNumber = setNumber+1
   end
   -- Output the result
-  output.setNumber(1, currentAngle)
+  output.setNumber(1, currentAngle/360)
+  output.setNumber(2, target.pos.x)
+  output.setNumber(3, target.pos.z)
+  output.setNumber(4, currentAngle)
+  output.setNumber(5, type)
 end
