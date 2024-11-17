@@ -1,2 +1,3 @@
-/_build/
-!/_build/_buildactions.lua
+/_build/_build.lua
+/_build/_simulator.lua
+/_build/_debug_simulator_log.txt
