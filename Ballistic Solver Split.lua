@@ -58,7 +58,7 @@ scansPerSet = 3
 sets = 3
 
 --Variables for during the execution of the program
-setNumber = 1
+runSets = 1
 currentAngle = 0
 
 -- Table of all the data relevant to each weapon type
@@ -139,21 +139,21 @@ end
 
 -- Main function executed on each tick
 function onTick()
-  if setNumber == 1 then
+  if runSets == 1 then
     -- Update target position
     target.pos.x = input.getNumber(1)*math.cos(input.getNumber(2)*math.pi*2)
     target.pos.z = input.getNumber(1)*math.sin(input.getNumber(2)*math.pi*2)
-    scans = {scan(90, math.deg(math.atan(target.pos.z,target.pos.x))//10-10, 10)}
+    scans = {scan(90, (math.deg(math.atan(target.pos.z,target.pos.x))//10)*10-10, 10)}
   end
   -- Perform scans to find the optimal angle
-  for i = (setNumber-1)*scansPerSet+2, setNumber*scansPerSet, 1 do
+  for i = (runSets-1)*scansPerSet+2, runSets*scansPerSet, 1 do
     scans[i] = scan(scans[i - 1] + 10 / (stepsPerScan^(i - 2)), scans[i - 1] - 10 / (stepsPerScan^(i - 2)), 10 / (stepsPerScan^(i - 1)))
   end
-  if setNumber >= sets then
-    setNumber = 1
+  if runSets >= sets then
+    runSets = 1
     currentAngle = scans[#scans]
   else
-    setNumber = setNumber+1
+    runSets = runSets+1
   end
   -- Output the result
   output.setNumber(1, currentAngle/360) --converts the current angle in degrees to turns
