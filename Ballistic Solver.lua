@@ -138,7 +138,11 @@ function onTick()
   target.pos.z = input.getNumber(2)
 
   -- Perform scans to find the optimal angle
-  scans = {scan(90, math.deg(math.atan(target.pos.z,target.pos.x))//10-10, 10)}
+
+  --Start with an initial scan in 10 degree increments from just under the straight line to the target until 90 degrees.
+  scans = {scan(90, (math.deg(math.atan(target.pos.z,target.pos.x))//10)*10-10, 10)}
+
+  --for the numberOfScans add a scan that starts at the previous tragectory one under the current closest and goes until the previous tragectory stepping in a size proportional to the stepsPerScan
   for i = 2, numberOfScans, 1 do
     scans[i] = scan(scans[i - 1] + 10 / (stepsPerScan^(i - 2)), scans[i - 1] - 10 / (stepsPerScan^(i - 2)), 10 / (stepsPerScan^(i - 1)))
   end
