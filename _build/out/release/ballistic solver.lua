@@ -8,40 +8,40 @@
 -- Minimized Size: 974 (1368 with comment) chars
 
 j=math
-p=input.getNumber
-u=j.rad
-s=j.abs
-n=j.huge
-type=property.getNumber("Weapon Type")o=5
+v=input.getNumber
+q=j.rad
+u=j.abs
+o=j.huge
+type=property.getNumber("Weapon Type")n=5
 z=5
-A={{h=.025,f=300,g=800},{h=.02,f=300,g=1000},{h=.01,f=300,g=1000},{h=.005,f=600,g=900},{h=.002,f=3600,g=800},{h=.001,f=3600,g=700},{h=.0005,f=3600,g=600}}_=A[type]i={a={b=0,c=0}}function w(l)_.d={}_.a={}_.d.b=_.g*j.cos(l)_.d.c=_.g*j.sin(l)_.a.b=0
+x={{g=.025,h=300,i=800},{g=.02,h=300,i=1000},{g=.01,h=300,i=1000},{g=.005,h=600,i=900},{g=.002,h=3600,i=800},{g=.001,h=3600,i=700},{g=.0005,h=3600,i=600}}_=x[type]f={a={b=0,c=0}}function D(l)_.e={}_.a={}_.e.b=_.i*j.cos(l)_.e.c=_.i*j.sin(l)_.a.b=0
 _.a.c=0
 _.m=0
 end
-function x()_.d.b=_.d.b*(1-_.h)_.d.c=_.d.c*(1-_.h)-.5
+function C()_.e.b=_.e.b*(1-_.g)_.e.c=_.e.c*(1-_.g)-.5
 end
-function y()_.a.b=_.a.b+_.d.b/60
-_.a.c=_.a.c+_.d.c/60
+function B()_.a.b=_.a.b+_.e.b/60
+_.a.c=_.a.c+_.e.c/60
 end
-function q(l)w(l)while(_.f>=_.m and i.a.b>_.a.b)do
+function r(l)D(l)while(_.h>=_.m and f.a.b>_.a.b)do
 _.m=_.m+1
-x()y()if(_.a.b+_.d.b*(_.f-_.m))<i.a.b-10 then
-return n
+C()B()if(_.a.b+_.e.b*(_.h-_.m))<f.a.b-10 then
+return o
 end
-if(_.d.c<-175)and((_.a.c-i.a.c)<-175)then
-return n
-end
-end
-return(_.a.c-i.a.c)end
-function r(D,B,C)v=n
-t=0
-for e=B,D,C do
-if(s(q(u(e)))<v)then
-v=s(q(u(e)))t=e
+if(_.e.c<-175)and((_.a.c-f.a.c)<-175)then
+return o
 end
 end
-return t
+return(_.a.c-f.a.c)end
+function p(A,y,w)t=o
+s=0
+for d=y,A,w do
+if(u(r(q(d)))<t)then
+t=u(r(q(d)))s=d
 end
-function onTick()i.a.b=p(1)i.a.c=p(2)k={r(90,(j.deg(j.atan(i.a.c,i.a.b))//10)*10-10,10)}for e=2,z,1 do
-k[e]=r(k[e-1]+10/(o^(e-2)),k[e-1]-10/(o^(e-2)),10/(o^(e-1)))end
+end
+return s
+end
+function onTick()f.a.b=v(1)f.a.c=v(2)k={p(90,(j.deg(j.atan(f.a.c,f.a.b))//10)*10-10,10)}for d=2,z,1 do
+k[d]=p(k[d-1]+10/(n^(d-2)),k[d-1]-10/(n^(d-2)),10/(n^(d-1)))end
 output.setNumber(1,k[#k])end

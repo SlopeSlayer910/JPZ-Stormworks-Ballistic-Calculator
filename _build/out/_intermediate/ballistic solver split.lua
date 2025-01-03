@@ -140,20 +140,20 @@ end
 
 -- Main function executed on each tick
 function onTick()
-  if runSets == 1 then
+  if runSets == 1 then --start of a search cycle
     -- Update target position
-    target.pos.x = input.getNumber(1)*math.cos(input.getNumber(2)*math.pi*2)
-    target.pos.z = input.getNumber(1)*math.sin(input.getNumber(2)*math.pi*2)
+    target.pos.x = input.getNumber(1)
+    target.pos.z = input.getNumber(2)
     scans = {scan(90, (math.deg(math.atan(target.pos.z,target.pos.x))//10)*10-10, 10)}
   end
   -- Perform scans to find the optimal angle
-  for i = (runSets-1)*scansPerSet+2, runSets*scansPerSet, 1 do
+  for i = (runSets-1)*(scansPerSet-1)+2, runSets*scansPerSet, 1 do
     scans[i] = scan(scans[i - 1] + 10 / (stepsPerScan^(i - 2)), scans[i - 1] - 10 / (stepsPerScan^(i - 2)), 10 / (stepsPerScan^(i - 1)))
   end
-  if runSets >= sets then
+  if runSets >= sets then --End of search cycle
     runSets = 1
     currentAngle = scans[#scans]
-  else
+  else --run next set
     runSets = runSets+1
   end
   -- Output the result
