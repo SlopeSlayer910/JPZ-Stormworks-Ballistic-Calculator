@@ -8,51 +8,51 @@
 -- Minimized Size: 1095 (1491 with comment) chars
 
 j=math
-l=output.setNumber
-t=input.getNumber
+m=output.setNumber
+y=input.getNumber
 z=j.rad
-y=j.abs
+x=j.abs
 r=j.huge
 type=property.getNumber("Weapon Type")q=3
-w=3
-D=3
+s=3
+G=3
 k=1
 p=0
-B={{h=.025,i=300,g=800},{h=.02,i=300,g=1000},{h=.01,i=300,g=1000},{h=.005,i=600,g=900},{h=.002,i=3600,g=800},{h=.001,i=3600,g=700},{h=.0005,i=3600,g=600}}_=B[type]d={a={b=0,c=0}}function C(n)_.f={}_.a={}_.f.b=_.g*j.cos(n)_.f.c=_.g*j.sin(n)_.a.b=0
-_.a.c=0
+H={{i=.025,g=300,h=800},{i=.02,g=300,h=1000},{i=.01,g=300,h=1000},{i=.005,g=600,h=900},{i=.002,g=3600,h=800},{i=.001,g=3600,h=700},{i=.0005,g=3600,h=600}}_=H[type]e={a={c=0,b=0}}function B(n)_.f={}_.a={}_.f.c=_.h*j.cos(n)_.f.b=_.h*j.sin(n)_.a.c=0
+_.a.b=0
 _.o=0
 end
-function A()_.f.b=_.f.b*(1-_.h)_.f.c=_.f.c*(1-_.h)-.5
+function A()_.f.c=_.f.c*(1-_.i)_.f.b=_.f.b*(1-_.i)-.5
 end
-function F()_.a.b=_.a.b+_.f.b/60
-_.a.c=_.a.c+_.f.c/60
+function F()_.a.c=_.a.c+_.f.c/60
+_.a.b=_.a.b+_.f.b/60
 end
-function x(n)C(n)while(_.i>=_.o and d.a.b>_.a.b)do
+function t(n)B(n)while(_.g>=_.o and e.a.c>_.a.c)do
 _.o=_.o+1
-A()F()if(_.a.b+_.f.b*(_.i-_.o))<d.a.b-10 then
+A()F()if(_.a.c+_.f.c*(_.g-_.o))<e.a.c-10 then
 return r
 end
-if(_.f.c<-175)and((_.a.c-d.a.c)<-175)then
+if(_.f.b<-175)and((_.a.b-e.a.b)<-175)then
 return r
 end
 end
-return(_.a.c-d.a.c)end
-function s(G,E,H)u=r
-v=0
-for e=E,G,H do
-if(y(x(z(e)))<u)then
-u=y(x(z(e)))v=e
+return(_.a.b-e.a.b)end
+function v(E,C,D)u=r
+w=0
+for d=C,E,D do
+if(x(t(z(d)))<u)then
+u=x(t(z(d)))w=d
 end
 end
-return v
+return w
 end
 function onTick()if k==1 then
-d.a.b=t(1)d.a.c=t(2)m={s(90,(j.deg(j.atan(d.a.c,d.a.b))//10)*10-10,10)}end
-for e=(k-1)*(w-1)+2,k*w,1 do
-m[e]=s(m[e-1]+10/(q^(e-2)),m[e-1]-10/(q^(e-2)),10/(q^(e-1)))end
-if k>=D then
+e.a.c=y(1)e.a.b=y(2)l={v(90,(j.deg(j.atan(e.a.b,e.a.c))//10)*10-10,10)}end
+for d=(k-1)*(s-1)+2,k*s,1 do
+l[d]=v(l[d-1]+10/(q^(d-2)),l[d-1]-10/(q^(d-2)),10/(q^(d-1)))end
+if k>=G then
 k=1
-p=m[#m]else
+p=l[#l]else
 k=k+1
 end
-l(1,p/360)l(2,d.a.b)l(3,d.a.c)l(4,p)l(5,type)end
+m(1,p/360)m(2,e.a.c)m(3,e.a.b)m(4,p)m(5,type)end

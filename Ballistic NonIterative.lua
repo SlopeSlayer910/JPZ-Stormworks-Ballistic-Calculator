@@ -106,19 +106,19 @@ function solveForTime(position, drag, velocity)
 end
 
 function getBulletPosition(time, velocity, angle, drag)
-    I_x = velocity*math.cos(angle)
-    I_y = velocity*math.sin(angle)
-    t = time --time in ticks, 60 = one second
+    local I_x = velocity*math.cos(angle)
+    local I_y = velocity*math.sin(angle)
+    local t = time --time in ticks, 60 = one second
 
-    k = 1-drag
+    local k = 1-drag
 
-    V_x = I_x*k^t --Velocity at a given time
-    V_z = I_x*k^t-0.5*(1-k^t)/drag
+    local V_x = I_x*k^t --Velocity at a given time
+    local V_z = I_x*k^t-0.5*(1-k^t)/drag
 
-    a = k*(1-k^t)/drag
+    local a = k*(1-k^t)/drag
 
-    S_x = a*I_x/60 --horizontal position
-    S_z = (I_y*a-0.5*(t-a)/drag)/60 --vertical position
+    local S_x = a*I_x/60 --horizontal position
+    local S_z = (I_y*a-0.5*(t-a)/drag)/60 --vertical position
 
     return S_x, S_z, V_x, V_z
 end
@@ -141,7 +141,7 @@ end
 -- Calculate vertical amount when the porjectile passes over the target distance based on launch pitch
 function missAmount(pitch)
     setUp(pitch)
-    impactTick = solveForTime(target.pos.x, projectile.drag, projectile.vel.x)
+    local impactTick = solveForTime(target.pos.x, projectile.drag, projectile.vel.x)
     if impactTick > projectile.lifetime then
         return math.huge
     end

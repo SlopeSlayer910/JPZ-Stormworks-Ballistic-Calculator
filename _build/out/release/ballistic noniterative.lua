@@ -5,60 +5,57 @@
 -- Developed & Minimized using LifeBoatAPI - Stormworks Lua plugin for VSCode
 -- https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
 --      By Nameous Changey
+-- Minimized Size: 1172 (1568 with comment) chars
 
---Credit for formula
---https://steamcommunity.com/profiles/76561198105241347/myworkshopfiles/?appid=573090
---https://discord.com/channels/357480372084408322/370840938739925003/1291950070555611277
-
-g=math
-l=output.setNumber
-x=input.getNumber
-C=g.rad
-F=g.abs
-D=g.huge
-H=g.sin
-y=g.cos
-w=g.log
-type=property.getNumber("Weapon Type")u=3
-G=3
-J=3
-j=1
-t=0
-M={{a=.025,k=300,d=800},{a=.02,k=300,d=1000},{a=.01,k=300,d=1000},{a=.005,k=600,d=900},{a=.002,k=3600,d=800},{a=.001,k=3600,d=700},{a=.0005,k=3600,d=600}}_=M[type]f={b={h=0,e=0}}function V(R,a,p)local i=w(1-(60*R*a)/((1-a)*p))/w(1-a)return i
+f=math
+o=output.setNumber
+I=input.getNumber
+E=f.rad
+G=f.abs
+B=f.huge
+D=f.sin
+H=f.cos
+C=f.log
+type=property.getNumber("Weapon Type")q=3
+y=3
+N=3
+i=1
+s=0
+K={{_=.025,j=300,d=800},{_=.02,j=300,d=1000},{_=.01,j=300,d=1000},{_=.005,j=600,d=900},{_=.002,j=3600,d=800},{_=.001,j=3600,d=700},{_=.0005,j=3600,d=600}}a=K[type]e={b={g=0,h=0}}function Q(V,_,p)local k=C(1-(60*V*_)/((1-_)*p))/C(1-_)return k
 end
-function K(U,p,v,a)r=p*y(v)S=p*H(v)i=U
-n=1-a
-Q=r*n^i
-W=r*n^i-.5*(1-n^i)/a
-q=n*(1-n^i)/a
-O=q*r/60
-T=(S*q-.5*(i-q)/a)/60
-return O,T,Q,W
+function M(L,p,w,_)local r=p*H(w)local W=p*D(w)local k=L
+local l=1-_
+local R=r*l^k
+local T=r*l^k-.5*(1-l^k)/_
+local t=l*(1-l^k)/_
+local P=t*r/60
+local X=(W*t-.5*(k-t)/_)/60
+return P,X,R,T
 end
-function L(m)_.s={}_.b={}_.s.h=_.d*y(m)_.s.e=_.d*H(m)_.b.h=0
-_.b.e=0
-_.Y=0
+function J(n)a.u={}a.b={}a.u.g=a.d*H(n)a.u.h=a.d*D(n)a.b.g=0
+a.b.h=0
+a.Y=0
 end
-function A(m)L(m)I=V(f.b.h,_.a,_.s.h)if I>_.k then
-return D
+function v(n)J(n)local A=Q(e.b.g,a._,a.u.g)if A>a.j then
+return B
 end
-_.b.h,_.b.e=K(I,_.d,m,_.a)return(f.b.e-_.b.e)end
-function E(X,P,N)B=D
-z=0
-for c=P,X,N do
-if(F(A(C(c)))<B)then
-B=F(A(C(c)))z=c
+a.b.g,a.b.h=M(A,a.d,n,a._)return(e.b.h-a.b.h)end
+function x(S,U,O)z=B
+F=0
+for c=U,S,O do
+if(G(v(E(c)))<z)then
+z=G(v(E(c)))F=c
 end
 end
-return z
+return F
 end
-function onTick()if j==1 then
-f.b.h=x(1)f.b.e=x(2)o={E(90,(g.deg(g.atan(f.b.e,f.b.h))//10)*10-10,10)}end
-for c=(j-1)*(G-1)+2,j*G,1 do
-o[c]=E(o[c-1]+10/(u^(c-2)),o[c-1]-10/(u^(c-2)),10/(u^(c-1)))end
-if j>=J then
-j=1
-t=o[#o]else
-j=j+1
+function onTick()if i==1 then
+e.b.g=I(1)e.b.h=I(2)m={x(90,(f.deg(f.atan(e.b.h,e.b.g))//10)*10-10,10)}end
+for c=(i-1)*(y-1)+2,i*y,1 do
+m[c]=x(m[c-1]+10/(q^(c-2)),m[c-1]-10/(q^(c-2)),10/(q^(c-1)))end
+if i>=N then
+i=1
+s=m[#m]else
+i=i+1
 end
-l(1,t/360)l(2,f.b.h)l(3,f.b.e)l(4,t)l(5,type)end
+o(1,s/360)o(2,e.b.g)o(3,e.b.h)o(4,s)o(5,type)end
